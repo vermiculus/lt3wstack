@@ -3,7 +3,7 @@
 The weighted stack is just a stack that associates nodes with weights
 (or priorities, depending on how you look at it).  When a node is
 pushed onto the stack, it will pop all those nodes with a weight
-greater than or equal to its own.
+less than or equal to its own.
 
     \wstack_new:N         create new weighted stack
     \wstack_show:N        output data to terminal (no weights yet)
@@ -22,9 +22,9 @@ greater than or equal to its own.
 
         l.16 \wstack_show:N \l_tmp_wstack
         The weighted stack \l_tmp_wstack contains the following {items} at (weights):
-        > (4) {four}
-        > (2) {two}
         > (1) {one}
+        > (2) {two}
+        > (4) {four}
         <recently read> }
 
 ## LICENSE

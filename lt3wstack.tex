@@ -32,7 +32,7 @@
   \seq_get:NN \l__wstack_tmp_seq \l__wstack_tmp_tl
   \bool_until_do:nn {
     \quark_if_no_value_p:N \l__wstack_tmp_tl ||
-    \int_compare_p:nNn {#2} > \l__wstack_tmp_tl
+    \int_compare_p:nNn {#2} < \l__wstack_tmp_tl
   }
   {
     \seq_pop:NN #1 \l__wstack_tmp_seq

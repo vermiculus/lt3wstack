@@ -5,30 +5,37 @@
 
 \input lt3wstack \relax
 
+\wstack_new:N \l_test_wstack
+\cs_new:Nn \t:nnn {
+  \msg_term:n {Begin~`#1'}
+  #3
+  \msg_term:n {Expected:~#2;~ got:}
+  \wstack_show:N \l_test_wstack
+  \msg_term:n {End}
+}
+
 % Define the logical behavior
 
-\wstack_new:N     \l_test_wstack
-\wstack_push:Nnn  \l_test_wstack {1} {one}
-\wstack_push:Nnn  \l_test_wstack {2} {two}
-\wstack_push:Nnn  \l_test_wstack {3} {three}
-\wstack_push:Nnn  \l_test_wstack {4} {four}
-\wstack_show:N    \l_test_wstack  % 4321
+\t:nnn {basic} {1,2,3,4} {
+  \wstack_push:Nnn \l_test_wstack {4} {four}
+  \wstack_push:Nnn \l_test_wstack {3} {three}
+  \wstack_push:Nnn \l_test_wstack {2} {two}
+  \wstack_push:Nnn \l_test_wstack {1} {one}
+}
 
 \wstack_get_data:NN \l_test_wstack \l_tmpa_seq
 \seq_show:N \l_tmpa_seq
 
-\wstack_push:Nnn  \l_test_wstack {2} {two-b}
-\wstack_show:N    \l_test_wstack  % 21
-\wstack_push:Nnn  \l_test_wstack {8} {EIGHT}
-\wstack_show:N    \l_test_wstack  % 821
-{
-  \wstack_gpush:Nnn \l_test_wstack {2} {two-c}
-  \wstack_push:Nnn  \l_test_wstack {3} {three-holla}
-  \wstack_show:N    \l_test_wstack  % 321
+\t:nnn {weightiness-1} {2,3,4} { \wstack_push:Nnn \l_test_wstack {2} {two-b} }
+\t:nnn {weightiness-2} {8}     { \wstack_push:Nnn \l_test_wstack {8} {EIGHT} }
+\t:nnn {global+local-1}{1,5,8} {
+  \group_begin:
+  \wstack_gpush:Nnn \l_test_wstack {5} {five}
+  \wstack_push:Nnn  \l_test_wstack {1} {one}
+  \group_end:
 }
-\wstack_show:N    \l_test_wstack  % 21
-\wstack_push:Nnn  \l_test_wstack {-1} {the basest}
-\wstack_show:N    \l_test_wstack  % -1
+\t:nnn {global+local-2} {5,8} {}
+\t:nnn {weightiness-3}  {10}  { \wstack_push:Nnn  \l_test_wstack {10} {the basest} }
 
 % to test, run `pdftex lt3wstack-test.tex'
 \tex_end:D
