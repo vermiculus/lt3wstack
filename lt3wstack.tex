@@ -1,6 +1,7 @@
 % \input expl3-generic \relax \ExplSyntaxOn
 
 \tl_new:N  \l__wstack_tmp_tl
+\int_new:N \l__wstack_tmp_int
 \seq_new:N \l__wstack_tmpa_seq
 \seq_new:N \l__wstack_tmpb_seq
 
@@ -15,10 +16,11 @@
   \seq_gset_eq:NN #1 #1
 }
 \cs_new:Npn \wstack_push:Nnn #1 #2 #3 {
-  \wstack_pop_to:Nn #1 {#2}
+  \int_set:Nn \l__wstack_tmp_int {#2}
+  \exp_args:No \wstack_pop_to:Nn #1 { \int_use:N \l__wstack_tmp_int }
   \seq_clear:N \l__wstack_tmp_seq
   \seq_push:Nn \l__wstack_tmp_seq {#3}
-  \seq_push:Nn \l__wstack_tmp_seq {#2}
+  \seq_push:NV \l__wstack_tmp_seq \l__wstack_tmp_int
   \seq_push:NV #1 \l__wstack_tmp_seq
 }
 
