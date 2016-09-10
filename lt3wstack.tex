@@ -1,0 +1,54 @@
+% \input expl3-generic \relax \ExplSyntaxOn
+
+\tl_new:N  \l__wstack_tmp_tl
+\seq_new:N \l__wstack_tmp_seq
+
+\cs_gset_eq:NN \wstack_new:N    \seq_new:N
+\cs_gset_eq:NN \wstack_use:Nn   \seq_use:Nn
+\cs_gset_eq:NN \wstack_use:Nnnn \seq_use:Nnnn
+\cs_gset_eq:NN \wstack_show:N   \seq_show:N
+\cs_gset_eq:NN \wstack_clear:N  \seq_clear:N
+\cs_gset_eq:NN \wstack_gclear:N \seq_gclear:N
+
+% Push #3 (weight #2) onto #1 t[O(n)]
+\cs_new:Npn \wstack_gpush:Nnn #1 #2 #3 {
+  \wstack_push:Nnn #1 {#2} {#3}
+  \seq_gset_eq:NN #1 #1
+}
+\cs_new:Npn \wstack_push:Nnn #1 #2 #3 {
+  \wstack_pop_to:Nn #1 {#2}
+  \seq_clear:N \l__wstack_tmp_seq
+  \seq_push:Nn \l__wstack_tmp_seq {#3}
+  \seq_push:Nn \l__wstack_tmp_seq {#2}
+  \seq_push:NV #1 \l__wstack_tmp_seq
+}
+
+% Pop #1 until weight #2 could be placed t[O(n)]
+\cs_new:Npn \wstack_gpop_to:Nn #1 #2 {
+  \wstack_pop_to:Nn #1 {#2}
+  \seq_gset_eq:NN #1 #1
+}
+\cs_new:Npn \wstack_pop_to:Nn #1 #2 {
+  \seq_get:NN #1 \l__wstack_tmp_seq
+  \seq_get:NN \l__wstack_tmp_seq \l__wstack_tmp_tl
+  \bool_until_do:nn {
+    \quark_if_no_value_p:N \l__wstack_tmp_tl ||
+    \int_compare_p:nNn {#2} > \l__wstack_tmp_tl
+  }
+  {
+    \seq_pop:NN #1 \l__wstack_tmp_seq
+    \seq_get:NN #1 \l__wstack_tmp_seq
+    \seq_get:NN \l__wstack_tmp_seq \l__wstack_tmp_tl
+  }
+}
+
+% Retrieve data from #1 and put into #2 t[O(n)]
+% If the stack was stored internally as 4321, the output is 1234
+\cs_new:Npn \wstack_get_data:NN #1 #2 {
+  \seq_clear:N #2
+  \seq_map_inline:Nn #1 {
+    \tl_set:Nn \l__wstack_tmp_seq { ##1 }
+    \tl_set:Nf \l__wstack_tmp_tl { \seq_item:Nn \l__wstack_tmp_seq 2 }
+    \seq_push:NV #2 \l__wstack_tmp_tl
+  }
+}

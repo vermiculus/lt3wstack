@@ -1,0 +1,34 @@
+% arara: pdftex
+\nonstopmode
+
+\input expl3-generic \relax \ExplSyntaxOn
+
+\input lt3wstack \relax
+
+% Define the logical behavior
+
+\wstack_new:N     \l_test_wstack
+\wstack_push:Nnn  \l_test_wstack {1} {one}
+\wstack_push:Nnn  \l_test_wstack {2} {two}
+\wstack_push:Nnn  \l_test_wstack {3} {three}
+\wstack_push:Nnn  \l_test_wstack {4} {four}
+\wstack_show:N    \l_test_wstack  % 4321
+
+\wstack_get_data:NN \l_test_wstack \l_tmpa_seq
+\seq_show:N \l_tmpa_seq
+
+\wstack_push:Nnn  \l_test_wstack {2} {two-b}
+\wstack_show:N    \l_test_wstack  % 21
+\wstack_push:Nnn  \l_test_wstack {8} {EIGHT}
+\wstack_show:N    \l_test_wstack  % 821
+{
+  \wstack_gpush:Nnn \l_test_wstack {2} {two-c}
+  \wstack_push:Nnn  \l_test_wstack {3} {three-holla}
+  \wstack_show:N    \l_test_wstack  % 321
+}
+\wstack_show:N    \l_test_wstack  % 21
+\wstack_push:Nnn  \l_test_wstack {-1} {the basest}
+\wstack_show:N    \l_test_wstack  % -1
+
+% to test, run `pdftex lt3wstack-test.tex'
+\tex_end:D
