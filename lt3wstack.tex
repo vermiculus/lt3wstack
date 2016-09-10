@@ -17,7 +17,7 @@
 }
 \cs_new:Npn \wstack_push:Nnn #1 #2 #3 {
   \int_set:Nn \l__wstack_tmp_int {#2}
-  \exp_args:No \wstack_pop_to:Nn #1 { \int_use:N \l__wstack_tmp_int }
+  \wstack_pop_to:NV #1 \l__wstack_tmp_int
   \seq_clear:N \l__wstack_tmp_seq
   \seq_push:Nn \l__wstack_tmp_seq {#3}
   \seq_push:NV \l__wstack_tmp_seq \l__wstack_tmp_int
@@ -42,6 +42,7 @@
     \seq_get:NN \l__wstack_tmp_seq \l__wstack_tmp_tl
   }
 }
+\cs_generate_variant:Nn \wstack_pop_to:Nn { NV }
 
 % Retrieve data from #1 and put into #2 t[O(n)]
 % If the stack was stored internally as 4321, the output is 1234
