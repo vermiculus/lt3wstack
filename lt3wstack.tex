@@ -1,11 +1,10 @@
 % \input expl3-generic \relax \ExplSyntaxOn
 
 \tl_new:N  \l__wstack_tmp_tl
-\seq_new:N \l__wstack_tmp_seq
+\seq_new:N \l__wstack_tmpa_seq
+\seq_new:N \l__wstack_tmpb_seq
 
 \cs_gset_eq:NN \wstack_new:N    \seq_new:N
-\cs_gset_eq:NN \wstack_use:Nn   \seq_use:Nn
-\cs_gset_eq:NN \wstack_use:Nnnn \seq_use:Nnnn
 \cs_gset_eq:NN \wstack_show:N   \seq_show:N
 \cs_gset_eq:NN \wstack_clear:N  \seq_clear:N
 \cs_gset_eq:NN \wstack_gclear:N \seq_gclear:N
@@ -47,8 +46,17 @@
 \cs_new:Npn \wstack_get_data:NN #1 #2 {
   \seq_clear:N #2
   \seq_map_inline:Nn #1 {
-    \tl_set:Nn \l__wstack_tmp_seq { ##1 }
-    \tl_set:Nf \l__wstack_tmp_tl { \seq_item:Nn \l__wstack_tmp_seq 2 }
+    \tl_set:Nn \l__wstack_tmpa_seq { ##1 }
+    \tl_set:Nf \l__wstack_tmp_tl { \seq_item:Nn \l__wstack_tmpa_seq {2} }
     \seq_push:NV #2 \l__wstack_tmp_tl
   }
+}
+
+\cs_new:Npn \wstack_use:Nn #1 #2 {
+  \wstack_get_data:NN #1 \l__wstack_tmpb_seq
+  \seq_use:Nn \l__wstack_tmpb_seq {#2}
+}
+\cs_new:Npn \wstack_use:Nnnn #1 #2 #3 #4 {
+  \wstack_get_data:NN #1 \l__wstack_tmpb_seq
+  \seq_use:Nnnn \l__wstack_tmpb_seq {#2} {#3} {#4}
 }
